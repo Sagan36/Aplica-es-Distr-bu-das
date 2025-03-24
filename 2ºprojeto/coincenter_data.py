@@ -147,6 +147,12 @@ class User(Client):
         for i in self.holdings:
             holdingslist.append([i.key, i.value])
         return f"User ID: {self.user_id}, Balance: ${self.balance}, Holdings: {holdingslist}"
+    
+    def get_balance(self):
+        return self.balance
+    
+    def get_holdings(self):
+        return self.holdings
 
     def buy_asset(self, asset_symbol:str, quantity:float) -> bool:
         """
@@ -293,4 +299,3 @@ class ClientController:
         client_id = int(request[-1])
         if client_id not in ClientController.clients:
             ClientController.clients[client_id] = User(client_id)
-        return ClientController.clients[client_id].process_request(request)            
