@@ -13,8 +13,8 @@ class CoinCenterStub:
     
     #gestor
     
-    def ADD_ASSET(self, symbol, price, supply):
-        request = [10, symbol, price, supply, self.id]
+    def ADD_ASSET(self, symbol,name, price, supply):
+        request = [10, symbol, name, price, supply, self.id]
         return self.server.send(request)
         
     def GET_ALL_ASSETS_G(self):

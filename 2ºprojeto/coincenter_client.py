@@ -4,7 +4,7 @@ Números de aluno: 62269
 """
 
 import sys
-from net_client import *
+from coincenter_stub import *
 
 ### código do programa principal ###
 
@@ -54,8 +54,37 @@ def show_user_menu():
         print("ERROR")
         return "ERROR"
     
-    
-    
+
+def run_command(prompt, stub, id):
+    #Manager
+    if prompt[0] == "EXIT" and id == "0":
+        stub.EXITG()
+        stub.disconnect()
+    elif prompt[0] == "ADD_ASSET":
+        stub.ADD_ASSET(prompt[1], prompt[2], prompt[3], prompt[4])
+    elif prompt[0] == "GET_ALL_ASSETS" and id == "0":
+        stub.GET_ALL_ASSETS_G()
+    elif prompt[0] == "REMOVE_ASSET":
+        stub.REMOVE_ASSET()
+    #Utilizador
+    elif prompt[0] == "EXIT" and int(id) > 0:
+        stub.EXITU()
+        stub.disconect()
+    elif prompt[0] == "GET_ALL_ASSETS_U" and int(id) > 0:
+        stub.GET_ALL_ASSETS_U()
+    elif prompt[0] == "GET_ASSETS_BALANCE":
+        stub.GET_ASSETS_BALANCE()
+    elif prompt[0] == "BUY":
+        stub.BUY(prompt[1], prompt[2])
+    elif prompt[0] == "SELL":
+        stub.SELL(prompt[1], prompt[2])
+    elif prompt[0] == "WITHDRAWM":
+        stub.WITHDRAW(prompt[1])
+    elif prompt[0] == "DEPOSIT":
+        stub.DEPOSIT(prompt[1])
+        
+        
+        
 def main():
     """
     Inicializa o cliente e processa os pedidos do utilizador
@@ -66,34 +95,31 @@ def main():
     user_id = str(sys.argv[1])
     server_ip = sys.argv[2]
     server_port = int(sys.argv[3])
-    client = NetClient(user_id,server_ip,server_port)
+    client = CoinCenterStub(user_id,server_ip,server_port)
     try:
         while True:   
                 if user_id == "0":
                     request = show_manager_menu()
-                    if request == "EXIT":
+                    if request[0] == "EXIT":
                         print("Exiting.")
-                        request.append(user_id)
-                        client.send(request)
-                        client.close()
+                        run_command(client,user_id)
+                        client.disconnect()
                         break
                     else:
-                        request.append(user_id)
-                        client.send(request)
+                        run_command(client,user_id)
                         client.recv()
                 else:
                     request = show_user_menu()
-                    if request == "EXIT":
-                        request.append(user_id)
-                        client.send(request)
+                    if request[0] == "EXIT":
                         print("Exiting.")
+                        run_command(client,user_id)
                         client.close()
                         break
                     else:
-                        request.append(user_id)
                         client.send(request)
-                        client.recv()       
-    except:
+                        client.recv()
+    except Exception as e:
+        print(e)
         return "ERROR"
 if __name__ == "__main__":
     main()
